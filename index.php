@@ -1,6 +1,5 @@
 <?php
 
-
 ?>
 
 <!DOCTYPE html>
@@ -13,10 +12,10 @@
 <body <?php body_class(); ?>> <!-- Add body class for loading wordpress classes -->
     
     <header>
-       <div class="container">
-            <nav class="nav montserrat" id="nav">
+       <div class="header-area container">
+            <nav class="nav montserrat <?php echo get_theme_mod('webaura_nav_position');?>" id="nav">
                 <div class="logo-container">
-                    <h3 class="logo"> <?php echo get_theme_mod('webaura_logo');?></h3>
+                    <a href="<?php echo home_url();?>"><h3 class="logo"> <?php echo get_theme_mod('webaura_logo');?></h3></a>
                 </div>
                 <?php wp_nav_menu( array(
                     'theme_location' => 'main_menu',
@@ -33,7 +32,17 @@
        </div>
     </header>
     <main>
-
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="content-area">
+                            <?php the_content(); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
     <footer>
 
