@@ -38,5 +38,29 @@ function enqueue_webaura_css_js(){
 add_action('wp_enqueue_scripts','enqueue_webaura_css_js');
 
 
+// Added Menu
+register_nav_menu('main_menu',__('Primary Menu', 'webaura'));
+
+
+
+// Navigation Bar Positon Customization
+function webaura_header_customizer($wp_customize){
+    $wp_customize->add_section('webaura_header_customizer', array(
+        'title' => 'WebAura Header',
+        'description' => 'You can customize the header from here',
+    ));
+    $wp_customize->add_setting('webaura_logo',array(
+        'default' => 'WebAura',
+    ));
+    $wp_customize->add_control( 'webaura_logo', array(
+        'label' => 'WebAura Logo',
+        'description' => 'You can change the logo from here',
+        'section' => 'webaura_header_customizer',
+        'setting' => 'webaura_logo',
+        'type' => 'text',
+    ));
+}
+add_action('customize_register', 'webaura_header_customizer');
+
 
 ?>

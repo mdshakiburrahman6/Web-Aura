@@ -14,17 +14,21 @@
     
     <header>
        <div class="container">
-            <nav class="nav" id="nav">
+            <nav class="nav montserrat" id="nav">
                 <div class="logo-container">
-                    <h3 class="logo">Web<span>Aura</span></h3>
+                    <h3 class="logo"> <?php echo get_theme_mod('webaura_logo');?></h3>
                 </div>
-                <ul>
+                <?php wp_nav_menu( array(
+                    'theme_location' => 'main_menu',
+                    'menu_id' => 'nav',
+                ) ); ?>
+                <!-- <ul>
                     <li><a href="#">Home</a></li>
                     <li><a href="#">About</a></li>
                     <li><a href="#">Portfolios</a></li>
                     <li><a href="#">Gallery</a></li>
                     <li><a href="#">Contact</a></li>
-                </ul>
+                </ul> -->
             </nav>
        </div>
     </header>
