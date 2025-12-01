@@ -19,7 +19,7 @@
                 </div>
                 <?php wp_nav_menu( array(
                     'theme_location' => 'main_menu',
-                    'menu_id' => 'nav',
+                    'menu_id' => 'main-menu',
                 ) ); ?>
                 <!-- <ul>
                     <li><a href="#">Home</a></li>

@@ -48,22 +48,72 @@ header{
 .logo span{
     color:blueviolet;
 }
+/* == Nav css == */
+#nav > #main-menu {
+    display: flex;
+    align-items: center;
+}
 #nav ul{
     display: flex;
     align-items: center;
     gap: 20px;
 }
-#nav ul li{
+#main-menu li {
     list-style: none;
+    position: relative;
 }
-#nav ul li a{
+
+#main-menu li a {
     text-decoration: none;
-    color: rgb(0, 0, 0);
+    color: #000;
     text-transform: uppercase;
 }
-#nav ul li a:hover{
+
+#main-menu li a:hover {
     color: blueviolet;
 }
+
+#main-menu ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    min-width: 180px;
+    padding: 10px 0;
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    z-index: 999;
+}
+
+#main-menu li:hover > ul {
+    display: block;
+}
+
+#main-menu ul li a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-transform: none;
+}
+
+#main-menu ul li a:hover {
+    background: #f2f2f2;
+    color: blueviolet;
+}
+
+#main-menu ul ul {
+    top: 0;
+    left: 100%;
+    padding: 10px 0;
+    display: none;
+    white-space: nowrap;
+}
+
+#main-menu ul li:hover > ul {
+    display: block;
+}
+
 
 /* ============= Nav Menu Position ================= */
 
