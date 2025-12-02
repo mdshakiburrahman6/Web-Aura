@@ -34,7 +34,6 @@
                                     <div class="post_excerpt">
                                         <p><?php the_excerpt(); ?></p>
                                     </div>
-                                    <!-- <?php the_content(); ?> -->
                                 </div>
                         
                         

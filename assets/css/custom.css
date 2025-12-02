@@ -4,6 +4,7 @@
     padding: 0;
 }
 /* Shared Styles */
+
 .poppins{
     font-family: "Poppins", sans-serif;
     font-optical-sizing: auto;
@@ -163,12 +164,13 @@ header{
 .blogs{
     display: grid;
     grid-template-columns: repeat(3,1fr);
-    gap: 20px;
+    gap: 30px;
 }
 .single-blog{
     padding: 20px;
-    border: 1px solid gray;
+    /* border: 1px solid gray; */
     border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(214, 214, 214, 0.5);
 }
 .post_thumb{
     width: 100%;
@@ -193,3 +195,20 @@ header{
     text-transform: capitalize;
     color: #000;
 }
+.read-more-btn-area{
+    margin-top: 30px;
+}
+.read-more-btn-area a{
+    text-decoration: none;
+}
+.read-more-btn{
+    color: rgb(255, 255, 255);
+    padding: 12px 20px;
+    background-color: blueviolet;
+    border-radius: 5px;
+}   
+.read-more-btn:hover{
+    color: blueviolet;
+    border: 1px solid blueviolet;
+    background-color: transparent;
+}   
