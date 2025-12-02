@@ -27,16 +27,3 @@ include_once('inc/footer_customizer.php');
 
 
 
-
-// Custom Excerpt Read More Button
-function webaura_excerpt_more($more){
-    return '<div class="read-more-btn-area"> <a class="read-more-btn" href="' . get_permalink() . '">Read More</a></div>';
-}
-add_filter('excerpt_more', 'webaura_excerpt_more');
-
-
-// Custom Excerpt Length
-function webaura_excerpt_length($length){
-    return 20; // number of words
-}
-add_filter('excerpt_length', 'webaura_excerpt_length', 999);

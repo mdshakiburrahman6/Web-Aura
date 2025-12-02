@@ -42,6 +42,13 @@
                                 endif;
                             ?>
                         </div>
+
+                        <div class="pagination-area">
+                            <div class="pagination-area">
+                                <?php webaura_bootstrap_pagination(); ?>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
