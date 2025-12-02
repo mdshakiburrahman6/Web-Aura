@@ -21,13 +21,6 @@
                     'theme_location' => 'main_menu',
                     'menu_id' => 'main-menu',
                 ) ); ?>
-                <!-- <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Portfolios</a></li>
-                    <li><a href="#">Gallery</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul> -->
             </nav>
        </div>
     </header>

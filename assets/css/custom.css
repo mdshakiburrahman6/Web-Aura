@@ -152,3 +152,44 @@ header{
 .copyright-text{
   color: black;
 }
+
+
+
+/* ============================= */
+/* Blogs Styles */
+.blog-area{
+    margin: 50px 0;
+}
+.blogs{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 20px;
+}
+.single-blog{
+    padding: 20px;
+    border: 1px solid gray;
+    border-radius: 10px;
+}
+.post_thumb{
+    width: 100%;
+    margin: 0px auto 20px auto;
+    overflow: hidden;
+    border-radius: 10px;
+}
+.post_thumb img{
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.post_thumb img:hover{
+    transform: scale(1.05);
+    transition: 1s;
+}
+.post_titles a{
+    text-decoration: none;
+}
+.post_title{
+    text-transform: capitalize;
+    color: #000;
+}
