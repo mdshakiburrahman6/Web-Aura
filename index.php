@@ -7,7 +7,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="content-area">
-                            <?php echo do_shortcode(get_the_content()); ?>
+                            <?php the_content(); ?>
                         </div>
                     </div>
                 </div>
@@ -57,5 +57,4 @@
 
 <!-- Include Footer -->
 <?php get_footer(); ?>
-
 

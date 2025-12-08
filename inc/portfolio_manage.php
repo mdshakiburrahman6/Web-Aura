@@ -20,8 +20,25 @@ function webaura_portfolio(){
         'hierarchical' => false,
         'show_ui' => true,
         'capability_type' => 'post',
+        'taxonomies' => array('category', 'tag'),
         'rewrite' => array('slug' => 'portfolio'),
         'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
     ));
 }
 add_action('init', 'webaura_portfolio');
+
+// For Show in category page
+
+function query_post_type($query){
+    if(is_category()){
+        $post_type = get_query_var('post_type');
+        if($post_type){
+            $post_type =$post_type;
+        }else{
+            $post_type = array('post', 'portfolio');
+            $query-> set('post_type', $post_type);
+            return $query;
+         }
+    }
+}
+add_filter('pre_get_posts','query_post_type');
