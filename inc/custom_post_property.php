@@ -28,6 +28,7 @@ function webaura_property(){
 }
 add_action('init', 'webaura_property');
 
+// ===================== Meta Box =======================//
 
 // Register Meta Boxs
 function webaura_property_meta_box(){
