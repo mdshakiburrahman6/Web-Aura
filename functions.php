@@ -20,3 +20,6 @@ include_once 'inc/portfolio_manage.php';
 
 //Include Shortcode
 include_once 'inc/shortcode.php';
+
+// Include property Post
+include_once 'inc/custom_post_property.php';
