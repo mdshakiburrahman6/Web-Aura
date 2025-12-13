@@ -24,5 +24,9 @@ include_once 'inc/shortcode.php';
 // Include property Post
 include_once 'inc/custom_post_property.php';
 
-// Include property Post
+// Include Question Post
 include_once 'inc/questions_custom_post.php';
+
+
+// Include Learning Post
+include_once 'inc/lerning_custome_post.php';

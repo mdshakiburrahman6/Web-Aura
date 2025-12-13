@@ -27,7 +27,7 @@ function webaura_question(){
         'capability_type' => 'post',
         'taxonomies' => array('category', 'post_tag'),
         'rewrite' => array('slug' => 'question'),
-        'supports' => array('title', 'editor', 'excerpt', 'thumbnail'),
+        'supports' => array('title', 'excerpt', 'thumbnail'),
     );
     register_post_type('questions', $args);
 }
@@ -53,31 +53,45 @@ add_action('add_meta_boxes', 'webaura_question_meta_boxes');
 
 function webaura_question_meta_fields($post){
 
-    $second_content = get_post_meta($post->ID, 'questions_second_editor', true);
+    
+    wp_nonce_field( 'questions_second_editor_nonce', 'questions_second_editor' );
+    
+    $second_content = get_post_meta($post->ID, 'questions_detsils', true);
 
-
-?>
-<textarea id="my_editor"></textarea>
-<script>
-tinymce.init({
-  selector: '#my_editor',
-  menubar: false,
-  toolbar: 'bold italic link',
-});
-</script>
-
-<?php
-
+    ?>
+        <!-- <p><strong>Question Details</strong></p> -->
+        <?php wp_editor($second_content, 'questions_detsils', array(
+            'textarea_name' => 'questions_detsils',
+            'textarea_rows' => 7,
+            'media_buttons' => true,
+        ) ); ?>
+    <?php
+   
 }
 
 // Save Meta boxes
 
 function webaura_question_meta_box_save($post_id){
-   if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-   if(!current_user_can( 'edit_post', $post_id )) return;
 
-    if(isset($_POST['questions_second_editor'])){
-        update_post_meta($post_id, 'questions_second_editor', wp_kses_post( $_POST['questions_second_editor'] ));
+    if(!isset($_POST['questions_second_editor'])){
+        !wp_verify_nonce($_POST['questions_second_editor'], 'questions_second_editor_nonce');
+        return;
     }
+
+    if(defined('DOING_AUTOSAFE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if(!current_user_can('edit_post', $post_id)){
+        return;
+    }
+
+    if(isset($_POST['questions_detsils'])){
+        update_post_meta($post_id, 'questions_detsils', wp_kses_post( $_POST['questions_detsils'] ));
+    }
+
+
 }
 add_action('save_post','webaura_question_meta_box_save');
+
+
