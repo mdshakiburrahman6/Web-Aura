@@ -1,97 +1,159 @@
 <?php
 
-// This themplate is for Question (FAQ) Custome_post_type 
+/* ====================
+This Template for the Custom Post Type - Question  
+====================*/
 
 
-// Register Custome Post Type
-function webaura_question(){
-    $labels = array(
-            'name' => 'Questions',
+// 1. Register Post Type
+function question_builder(){
+    register_post_type( 'question' ,array(
+        'labels' => array(
+            'name' => 'Question',
             'singular_name' => 'Question',
-            'add_item' => 'Add New Question',
-            'add_new_item' => 'Add New Question',
-            'new_item' => 'New Question',
-            'view_item' => 'View Question',
-            'edit_item' => 'Edit Question',
-    );
-    $args = array(
-        'labels' => $labels,
-        'menu_icon' => 'dashicons-list-view',
-        'menu_position' => 6,
+        ),
+        'menu_icon' => 'dashicons-format-status',
         'public' => true,
         'publicly_queryable' => true,
-        'hierarchical' => false,
-        'show_ui' => true,
-        'has_archive' => true,
-        'exclude_from_search' => true,
-        'capability_type' => 'post',
-        'taxonomies' => array('category', 'post_tag'),
         'rewrite' => array('slug' => 'question'),
-        'supports' => array('title', 'excerpt', 'thumbnail'),
-    );
-    register_post_type('questions', $args);
+        'supports' => array('title'),
+    ));
 }
-add_action('init', 'webaura_question');
+add_action('init', 'question_builder');
 
 
-/* ======================
-Add Meta Box
-========================= */
-
-// Register Meta box
-function webaura_question_meta_boxes(){
+// 2. Add Meta Box
+function question_builder_meta_box(){
     add_meta_box(
-        'questions_second_editor',     // id
-        'Second Editor',    // Title
-        'webaura_question_meta_fields',     // Callback
-        'questions',    // Post Type
-        'normal', // Position
-        'low', // Priority
+        'question_id',
+        'Question & Answer',
+        'question_builder_meta_box_callback',
+        'question',
+        'normal',
+        'high',
     );
 }
-add_action('add_meta_boxes', 'webaura_question_meta_boxes');
+add_action('add_meta_boxes', 'question_builder_meta_box');
 
-function webaura_question_meta_fields($post){
 
-    
-    wp_nonce_field( 'questions_second_editor_nonce', 'questions_second_editor' );
-    
-    $second_content = get_post_meta($post->ID, 'questions_detsils', true);
+// 3. Meta box UI
+function question_builder_meta_box_callback($post){
+
+    wp_nonce_field('question_builder_nonce','question_builder_nonce_field');
+
+    $questions = get_post_meta($post->ID, '_questions', true);
+    $questions = is_array($questions) ? $questions : [];
+
+    if(empty($questions)){
+        $questions[]  =  [
+            'question' => '',
+            'type' => 'text',
+            'answer' => '',
+            'options' => [''],
+        ];
+    }
 
     ?>
-        <!-- <p><strong>Question Details</strong></p> -->
-        <?php wp_editor($second_content, 'questions_detsils', array(
-            'textarea_name' => 'questions_detsils',
-            'textarea_rows' => 7,
-            'media_buttons' => true,
-        ) ); ?>
+        <div class="questions-wrapper">
+            <!-- Loop -->
+            <?php 
+                foreach ($questions as $index => $q):
+            ?>
+                <div class="question-items">
+
+                    <!-- Question Field -->
+                    <label for="question">Question</label>
+                    <input type="text" name="qst[<?php echo esc_attr( $index );?>][question]" value="<?php echo esc_attr($q['question']); ?>" style="width: 100%;">
+
+                    <!-- Type -->
+                    <label for="type">Type</label>
+                    <select name="qst[<?php echo $index; ?>][type]" class="question_type">
+                        <option value="text" <?php selected( $q['type'],'text'); ?>>Text</option>
+                        <option value="radio" <?php selected( $q['type'],'radio'); ?>>Radio</option>
+                    </select>
+
+                    <!-- Text (Type) -->
+                    <div class="type-text">
+                        <input type="text" name="qst[<?php echo $index; ?>][asnwer]" value="<?php echo esc_attr( $q['answer']); ?>" placeholder="Short answer">
+                    </div>
+
+                    <!-- Radio (Type) -->
+                    <div class="type-radio">
+                        <?php foreach ($q['options'] as $opt) : ?>
+                            <input type="text" name="qst[<?php echo $index; ?>][options][]" value="<?php echo esc_attr( $opt ); ?>" placeholder="Option">
+                        <?php endforeach; ?>
+                        <button type="button" class="add-option">Add Option</button>
+                    </div>
+
+                </div>
+
+            <?php endforeach ?>
+            <!-- End Loop -->
+        </div>
+
+        <div class="questions-btn">
+            <button type="button" id="add_question" class="add_question_btn button-primary">Add Question</button>
+        </div>
     <?php
-   
 }
 
-// Save Meta boxes
 
-function webaura_question_meta_box_save($post_id){
+// 4. Save Meta
+function question_builder_save_meta($post_id){
 
-    if(!isset($_POST['questions_second_editor'])){
-        !wp_verify_nonce($_POST['questions_second_editor'], 'questions_second_editor_nonce');
-        return;
+    if(get_post_type( $post_id ) !== 'question') return ;
+    if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return ; 
+    if( ! current_user_can( 'edit_post', $post_id )) return;
+
+    if( ! isset($_POST['question_builder_nonce_field']) || ! wp_verify_nonce($_POST['question_builder_nonce_field'], 'question_builder_nonce')) return;
+
+    if ( isset($_POST['qst']) && is_array($_POST['qst']) ) {
+
+        $clean = [];
+
+        foreach ($_POST['qst'] as $q) {
+            $clean[] = [
+                'question' => sanitize_text_field($q['question'] ?? ''),
+                'type'     => sanitize_text_field($q['type'] ?? 'text'),
+                'answer'   => sanitize_text_field($q['answer'] ?? ''),
+                'options'  => isset($q['options'])
+                    ? array_map('sanitize_text_field', $q['options'])
+                    : [],
+            ];
+        }
+
+        update_post_meta($post_id, '_questions', $clean);
     }
-
-    if(defined('DOING_AUTOSAFE') && DOING_AUTOSAVE) {
-        return;
-    }
-
-    if(!current_user_can('edit_post', $post_id)){
-        return;
-    }
-
-    if(isset($_POST['questions_detsils'])){
-        update_post_meta($post_id, 'questions_detsils', wp_kses_post( $_POST['questions_detsils'] ));
-    }
-
 
 }
-add_action('save_post','webaura_question_meta_box_save');
+add_action('save_post', 'question_builder_save_meta');
 
 
+//  5. Enqueue JS & CSS
+function question_builder_admin_assets($hook){
+
+    global $post;
+
+    if (
+        ($hook === 'post-new.php' || $hook === 'post.php') &&
+        isset($post->post_type) &&
+        $post->post_type === 'question'
+    ) {
+
+        wp_enqueue_style(
+            'question-builder-css',
+            get_template_directory_uri() . '/assets/css/custom.css',
+            [],
+            '1.0'
+        );
+
+        wp_enqueue_script(
+            'question-builder-js',
+            get_template_directory_uri() . '/assets/js/question-builder.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+    }
+}
+add_action('admin_enqueue_scripts', 'question_builder_admin_assets');

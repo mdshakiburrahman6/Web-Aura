@@ -1,0 +1,41 @@
+.questions-wrapper {
+    margin-top: 15px;
+}
+
+.question-items {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fafafa;
+    border-radius: 6px;
+}
+
+.question-items label {
+    font-weight: 600;
+    display: block;
+    margin-top: 10px;
+}
+
+.question-items input,
+.question-items select {
+    width: 100%;
+    margin-top: 6px;
+    padding: 6px 8px;
+}
+
+.type-radio,
+.type-text {
+    margin-top: 10px;
+}
+
+.type-radio input {
+    margin-bottom: 6px;
+}
+
+.add-option {
+    margin-top: 8px;
+}
+
+.questions-btn {
+    margin-top: 15px;
+}
