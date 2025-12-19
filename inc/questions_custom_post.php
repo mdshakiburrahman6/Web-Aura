@@ -62,28 +62,34 @@ function question_builder_meta_box_callback($post){
                 <div class="question-items">
 
                     <!-- Question Field -->
-                    <label for="question">Question</label>
-                    <input type="text" name="qst[<?php echo esc_attr( $index );?>][question]" value="<?php echo esc_attr($q['question']); ?>" style="width: 100%;">
+                     <div class="question-box">
+                         <label for="question">Question</label>
+                         <input type="text" name="qst[<?php echo esc_attr( $index );?>][question]" value="<?php echo esc_attr($q['question']); ?>">
+                     </div>
 
-                    <!-- Type -->
-                    <label for="type">Type</label>
-                    <select name="qst[<?php echo $index; ?>][type]" class="question_type">
-                        <option value="text" <?php selected( $q['type'],'text'); ?>>Text</option>
-                        <option value="radio" <?php selected( $q['type'],'radio'); ?>>Radio</option>
-                    </select>
+                   <div class="answer">
+                         <!-- Type -->
+                        <div class="question-type">
+                            <label for="type">Type</label>
+                            <select name="qst[<?php echo $index; ?>][type]" class="question_type">
+                                <option value="text" <?php selected( $q['type'],'text'); ?>>Text</option>
+                                <option value="radio" <?php selected( $q['type'],'radio'); ?>>Radio</option>
+                            </select>
+                        </div>
 
-                    <!-- Text (Type) -->
-                    <div class="type-text">
-                        <input type="text" name="qst[<?php echo $index; ?>][asnwer]" value="<?php echo esc_attr( $q['answer']); ?>" placeholder="Short answer">
-                    </div>
+                        <!-- Text (Type) -->
+                        <div class="type-text">
+                            <input type="text" name="qst[<?php echo $index; ?>][asnwer]" value="<?php echo esc_attr( $q['answer']); ?>" placeholder="Short answer">
+                        </div>
 
-                    <!-- Radio (Type) -->
-                    <div class="type-radio">
-                        <?php foreach ($q['options'] as $opt) : ?>
-                            <input type="text" name="qst[<?php echo $index; ?>][options][]" value="<?php echo esc_attr( $opt ); ?>" placeholder="Option">
-                        <?php endforeach; ?>
-                        <button type="button" class="add-option">Add Option</button>
-                    </div>
+                        <!-- Radio (Type) -->
+                        <div class="type-radio">
+                            <?php foreach ($q['options'] as $opt) : ?>
+                                <input type="text" name="qst[<?php echo $index; ?>][options][]" value="<?php echo esc_attr( $opt ); ?>" placeholder="Option">
+                            <?php endforeach; ?>
+                            <button type="button" class="add-option button-primary">Add Option</button>
+                        </div>
+                   </div>
 
                 </div>
 
@@ -142,7 +148,7 @@ function question_builder_admin_assets($hook){
 
         wp_enqueue_style(
             'question-builder-css',
-            get_template_directory_uri() . '/assets/css/custom.css',
+            get_template_directory_uri() . '/assets/css/question-builder.css',
             [],
             '1.0'
         );
