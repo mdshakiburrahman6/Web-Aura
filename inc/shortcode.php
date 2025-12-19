@@ -70,3 +70,5 @@ function portfolio_shortcode($atts){
     }
 }
 add_shortcode('port_short', 'portfolio_shortcode');
+
+

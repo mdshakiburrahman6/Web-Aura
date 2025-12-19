@@ -54,3 +54,18 @@
 .questions-btn {
     margin-top: 15px;
 }
+
+.question-actions {
+    margin-top: 12px;
+    text-align: right;
+}
+
+.remove-question {
+    color: #b32d2e;
+    border-color: #b32d2e;
+}
+
+.remove-question:hover {
+    background: #b32d2e;
+    color: #fff;
+}

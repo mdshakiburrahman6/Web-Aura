@@ -15,6 +15,7 @@ function question_builder(){
         'menu_icon' => 'dashicons-format-status',
         'public' => true,
         'publicly_queryable' => true,
+        'has_archive' => true,
         'rewrite' => array('slug' => 'question'),
         'supports' => array('title'),
     ));
@@ -79,17 +80,25 @@ function question_builder_meta_box_callback($post){
 
                         <!-- Text (Type) -->
                         <div class="type-text">
-                            <input type="text" name="qst[<?php echo $index; ?>][asnwer]" value="<?php echo esc_attr( $q['answer']); ?>" placeholder="Short answer">
+                            <input type="text" name="qst[<?php echo $index; ?>][answer]" value="<?php echo esc_attr( $q['answer']); ?>" placeholder="Short answer">
                         </div>
 
                         <!-- Radio (Type) -->
                         <div class="type-radio">
-                            <?php foreach ($q['options'] as $opt) : ?>
+                            <?php
+                                $options = isset($q['options']) && is_array($q['options']) ? $q['options'] : [''];
+                                foreach ($options as $opt) :
+                            ?>
                                 <input type="text" name="qst[<?php echo $index; ?>][options][]" value="<?php echo esc_attr( $opt ); ?>" placeholder="Option">
                             <?php endforeach; ?>
                             <button type="button" class="add-option button-primary">Add Option</button>
                         </div>
                    </div>
+
+                   <!-- Remove Button -->
+                    <button type="button" class="remove-question button button-secondary">
+                        Remove
+                    </button>
 
                 </div>
 
@@ -136,30 +145,25 @@ add_action('save_post', 'question_builder_save_meta');
 
 
 //  5. Enqueue JS & CSS
-function question_builder_admin_assets($hook){
+add_action('admin_enqueue_scripts', function ($hook) {
 
-    global $post;
-
-    if (
-        ($hook === 'post-new.php' || $hook === 'post.php') &&
-        isset($post->post_type) &&
-        $post->post_type === 'question'
-    ) {
-
-        wp_enqueue_style(
-            'question-builder-css',
-            get_template_directory_uri() . '/assets/css/question-builder.css',
-            [],
-            '1.0'
-        );
-
-        wp_enqueue_script(
-            'question-builder-js',
-            get_template_directory_uri() . '/assets/js/question-builder.js',
-            ['jquery'],
-            '1.0',
-            true
-        );
+    // Only load on post editor pages
+    if ($hook !== 'post.php' && $hook !== 'post-new.php') {
+        return;
     }
-}
-add_action('admin_enqueue_scripts', 'question_builder_admin_assets');
+
+    wp_enqueue_script(
+        'question-builder-js',
+        get_template_directory_uri() . '/assets/js/question-builder.js',
+        ['jquery'],
+        time(), // cache-busting
+        true
+    );
+
+    wp_enqueue_style(
+        'question-builder-css',
+        get_template_directory_uri() . '/assets/css/question-builder.css',
+        [],
+        time()
+    );
+});
