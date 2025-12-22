@@ -1,6 +1,93 @@
+/* ===============================
+   Repeator Admin Base
+================================ */
+
+.repeator-wrapper {
+    margin-top: 10px;
+}
+
+.repeator-item {
+    border: 1px solid #ccd0d4;
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+/* Question input */
+.repeator-question {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Type dropdown */
+.repeator-type {
+    min-width: 180px;
+    margin: 5px 0 10px;
+}
+
+/* ===============================
+   Hide all type fields by default
+   JS will control visibility
+================================ */
+
 .rep-type-text,
 .rep-type-editor,
 .repeator-answer-radio,
 .repeator-type-image {
     display: none;
+}
+
+/* Text answer input */
+.rep-type-text input {
+    width: 100%;
+}
+
+/* ===============================
+   Radio Options
+================================ */
+
+.repeator-answer-radio input {
+    width: 100%;
+    margin-bottom: 6px;
+}
+
+.add-rep-opt {
+    margin-top: 6px;
+}
+
+/* ===============================
+   Image Field
+================================ */
+
+.repeator-type-image {
+    margin-top: 10px;
+}
+
+.rep-image-preview img {
+    display: block;
+    max-width: 120px;
+    margin-top: 8px;
+    border: 1px solid #ccd0d4;
+    border-radius: 3px;
+}
+
+/* ===============================
+   Add Question Button
+================================ */
+
+.repeator-button {
+    margin-top: 10px;
+}
+
+.add-rep-question {
+    font-weight: 600;
+}
+
+/* ===============================
+   wp_editor fix
+================================ */
+
+.rep-type-editor .wp-editor-wrap {
+    margin-top: 10px;
 }

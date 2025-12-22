@@ -91,7 +91,7 @@ function webaura_repeator_callback($post){
                     <div class="rep-type-editor">
                         <?php wp_editor($rep['answer'], 'rpt_editor_' . $index, array(
                             'textarea_name' => "rpt[$index][answer]",
-                            'textarea_rows' => 6,
+                            'textarea_rows' => 8,
                             'media_buttons' => true,
                         )); ?>
                     </div>
@@ -102,7 +102,7 @@ function webaura_repeator_callback($post){
                             <input class="repeator-answer-text" type="text" name="rpt[<?php echo $index; ?>][options][]" value="<?php echo esc_attr($opt); ?>" placeholder="Enter the Option.">
                         <?php endforeach; ?>
                         <div class="repeator-option-button">
-                            <button type="button" id="add-rep-opt" class="add-rep-opt">Add Options</button>
+                            <button type="button" id="add-rep-opt" class="button add-rep-opt">Add Options</button>
                         </div>
                     </div>
 
@@ -126,7 +126,7 @@ function webaura_repeator_callback($post){
 
             <!-- Repetor Button -->
             <div class="repeator-button">
-                <button type="button" id="add-rep-question" class="add-rep-question">Add Question</button>
+                <button type="button" id="add-rep-question" class="button add-rep-question">Add Question</button>
             </div>
         </div>
 

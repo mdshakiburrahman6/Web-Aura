@@ -99,7 +99,8 @@ jQuery(document).ready(function ($) {
         </div>
         `;
 
-        $('.repeator-wrapper').append(template);
+        $('.repeator-button').before(template);
+
     });
 
     /* ============================
