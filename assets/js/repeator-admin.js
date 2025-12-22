@@ -168,7 +168,7 @@ jQuery(document).ready(function ($) {
             multiple: 'add'
         });
 
-        /* ✅ PRESELECT EXISTING IMAGES */
+        /* PRESELECT EXISTING IMAGES */
         frame.on('open', function () {
             let selection = frame.state().get('selection');
             ids.forEach(function (id) {

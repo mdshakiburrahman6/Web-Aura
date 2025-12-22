@@ -15,8 +15,8 @@ function webaura_repeator(){
         'labels' => $labels,
         'menu_icon' => 'dashicons-update',
         'public' => true,
-        'has_archive' => true,
-        'rewrite' => array('slug' => 'repeator'),
+        'has_archive' => false,
+        'rewrite' => array('slug' => 'repeator', 'with_front' => false),
         'supports' => array('title'),
     );
 
