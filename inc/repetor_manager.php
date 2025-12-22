@@ -56,7 +56,8 @@ function webaura_repeator_callback($post){
                         'type'  =>  'text',
                         'answer' => '',
                         'options' => [''],
-                        'image'    => 0,
+                        'image'   => 0,
+                        'gallery' => [],
                         ];
     }
 
@@ -78,6 +79,7 @@ function webaura_repeator_callback($post){
                         <option value="editor" <?php selected($rep['type'],'editor'); ?>>Editor</option>
                         <option value="radio" <?php selected($rep['type'],'radio'); ?>>Radio</option>
                         <option value="image" <?php selected($rep['type'],'image') ?>>Image</option>
+                        <option value="gallery" <?php selected($rep['type'],'gallery') ?>>Gallery</option>
                     </select>
                     
                     
@@ -120,6 +122,25 @@ function webaura_repeator_callback($post){
                             ?>
                         </div>
                     </div>
+                    
+                    <!-- Gallery -->
+                    <div class="repeator-type-gallery">
+                        <input type="hidden" class="rep-gallery-ids" name="rpt[<?php echo $index; ?>][gallery]" value="<?php echo esc_attr( implode(',', $rep['gallery']  ?? [] )); ?>">
+                            
+                        <button type="button" class="button rep-gallery-upload">Add Gallery</button>
+
+                        <div class="rep-gallery-preview">
+                             <?php if (!empty($rep['gallery'])) :
+                                foreach ($rep['gallery'] as $img_id) :
+                                    $img_url = wp_get_attachment_image_url($img_id, 'thumbnail');
+                            ?>
+                                <div class="rep-gallery-item" data-id="<?php echo esc_attr($img_id); ?>">
+                                    <span class="rep-gallery-remove">×</span>
+                                    <img src="<?php echo esc_url($img_url); ?>">
+                                </div>
+                            <?php endforeach; endif; ?>
+                        </div>
+                    </div>
 
                 </div>
             <?php endforeach; ?>
@@ -146,21 +167,25 @@ function webaura_repeator_save_meta($post_id){
     if(!isset($_POST['webaura_repeator_nonce_field']) || ! wp_verify_nonce($_POST['webaura_repeator_nonce_field'],'webaura_repeator_nonce')) return;
 
     if(isset($_POST['rpt']) && is_array($_POST['rpt'])){
-    
-    
 
-        $clean = [];
+       $clean = [];
 
        foreach($_POST['rpt'] as $rep){
 
-            $image = isset($rep['image']) ? intval($rep['image']) : 0;
+            
+            $gallery = [];
+
+            if (!empty($rep['gallery'])) {
+                $gallery = array_map('intval', explode(',', $rep['gallery']));
+            }
 
             $clean[] = [
                 'question' => sanitize_text_field($rep['question'] ?? ''),
                 'type' => sanitize_text_field( $rep['type'] ?? 'text' ),
                 'answer' => sanitize_text_field( $rep['answer'] ?? '' ),
                 'options' => isset($rep['options']) ? array_map('sanitize_text_field', $rep['options'] ) : [],
-                'image'    => $image,
+                'image'   => isset($rep['image']) ? intval($rep['image']) : 0,
+                'gallery' => $gallery,
             ];
        }
        update_post_meta($post_id, '_repeators', $clean);
@@ -183,6 +208,9 @@ function webaura_repeator_admin_assets($hook) {
         isset($post) &&
         $post->post_type === 'repeator'
     ) {
+
+        wp_enqueue_media();
+
 
         // Admin CSS (optional)
         wp_enqueue_style(

@@ -4,13 +4,17 @@ jQuery(document).ready(function ($) {
      * Toggle Fields by Type
      * ============================ */
     function toggleRepeatorType(wrapper) {
+
         let type = wrapper.find('.repeator-type').val();
 
+        // hide all first
         wrapper.find('.rep-type-text').hide();
         wrapper.find('.rep-type-editor').hide();
         wrapper.find('.repeator-answer-radio').hide();
         wrapper.find('.repeator-type-image').hide();
+        wrapper.find('.repeator-type-gallery').hide();
 
+        // show based on type
         if (type === 'text') {
             wrapper.find('.rep-type-text').show();
         }
@@ -26,14 +30,22 @@ jQuery(document).ready(function ($) {
         if (type === 'image') {
             wrapper.find('.repeator-type-image').show();
         }
+
+        if (type === 'gallery') {
+            wrapper.find('.repeator-type-gallery').show();
+        }
     }
 
-    /* Initial load */
+    /* ============================
+     * Initial Load
+     * ============================ */
     $('.repeator-item').each(function () {
         toggleRepeatorType($(this));
     });
 
-    /* On type change */
+    /* ============================
+     * On Type Change
+     * ============================ */
     $(document).on('change', '.repeator-type', function () {
         toggleRepeatorType($(this).closest('.repeator-item'));
     });
@@ -58,6 +70,7 @@ jQuery(document).ready(function ($) {
                 <option value="editor">Editor</option>
                 <option value="radio">Radio</option>
                 <option value="image">Image</option>
+                <option value="gallery">Gallery</option>
             </select>
 
             <!-- Text -->
@@ -68,12 +81,12 @@ jQuery(document).ready(function ($) {
             </div>
 
             <!-- Editor -->
-            <div class="rep-type-editor" style="display:none;">
+            <div class="rep-type-editor">
                 <textarea name="rpt[${index}][answer]" rows="6"></textarea>
             </div>
 
             <!-- Radio -->
-            <div class="repeator-answer-radio" style="display:none;">
+            <div class="repeator-answer-radio">
                 <input type="text"
                        name="rpt[${index}][options][]"
                        placeholder="Option">
@@ -83,24 +96,38 @@ jQuery(document).ready(function ($) {
             </div>
 
             <!-- Image -->
-            <div class="repeator-type-image" style="display:none;">
+            <div class="repeator-type-image">
                 <input type="hidden"
                        class="rep-image-id"
                        name="rpt[${index}][image]">
-
                 <button type="button"
                         class="button rep-image-upload">
                     Select Image
                 </button>
-
                 <div class="rep-image-preview"></div>
+            </div>
+
+            <!-- Gallery -->
+            <div class="repeator-type-gallery">
+                <input type="hidden"
+                       class="rep-gallery-ids"
+                       name="rpt[${index}][gallery]">
+                <button type="button"
+                        class="button rep-gallery-upload">
+                    Add Gallery
+                </button>
+                <div class="rep-gallery-preview"></div>
             </div>
 
         </div>
         `;
 
-        $('.repeator-button').before(template);
+        let newItem = $(template);
 
+        $('.repeator-button').before(newItem);
+
+        // 🔥 VERY IMPORTANT
+        toggleRepeatorType(newItem);
     });
 
     /* ============================
@@ -119,37 +146,96 @@ jQuery(document).ready(function ($) {
     });
 
     /* ============================
-     * Image Media Uploader
+     * Single Image Uploader
      * ============================ */
-    let mediaUploader;
+    let imageUploader;
 
     $(document).on('click', '.rep-image-upload', function (e) {
         e.preventDefault();
 
-        let button = $(this);
-        let wrapper = button.closest('.repeator-type-image');
-        let imageInput = wrapper.find('.rep-image-id');
+        let wrapper = $(this).closest('.repeator-type-image');
+        let input   = wrapper.find('.rep-image-id');
         let preview = wrapper.find('.rep-image-preview');
 
-        if (mediaUploader) {
-            mediaUploader.open();
-            return;
-        }
-
-        mediaUploader = wp.media({
+        imageUploader = wp.media({
             title: 'Select Image',
             button: { text: 'Use this image' },
             multiple: false
         });
 
-        mediaUploader.on('select', function () {
-            let attachment = mediaUploader.state().get('selection').first().toJSON();
-
-            imageInput.val(attachment.id);
+        imageUploader.on('select', function () {
+            let attachment = imageUploader.state().get('selection').first().toJSON();
+            input.val(attachment.id);
             preview.html(`<img src="${attachment.sizes.thumbnail.url}" />`);
         });
 
-        mediaUploader.open();
+        imageUploader.open();
+    });
+
+    /* ============================
+     * Gallery Uploader (Multiple)
+     * ============================ */
+    let galleryUploader;
+
+    $(document).on('click', '.rep-gallery-upload', function (e) {
+        e.preventDefault();
+
+        let wrapper = $(this).closest('.repeator-type-gallery');
+        let input   = wrapper.find('.rep-gallery-ids');
+        let preview = wrapper.find('.rep-gallery-preview');
+
+        let ids = input.val()
+            ? input.val().split(',').map(id => parseInt(id))
+            : [];
+
+        galleryUploader = wp.media({
+            title: 'Select Images',
+            button: { text: 'Add to Gallery' },
+            multiple: true
+        });
+
+        galleryUploader.on('select', function () {
+
+            let selection = galleryUploader.state().get('selection');
+
+            selection.each(function (attachment) {
+
+                attachment = attachment.toJSON();
+
+                if (!ids.includes(attachment.id)) {
+                    ids.push(attachment.id);
+
+                    preview.append(`
+                        <div class="rep-gallery-item" data-id="${attachment.id}">
+                            <span class="rep-gallery-remove">×</span>
+                            <img src="${attachment.sizes.thumbnail.url}">
+                        </div>
+                    `);
+                }
+            });
+
+            input.val(ids.join(','));
+        });
+
+        galleryUploader.open();
+    });
+
+    /* ============================
+     * Remove Single Gallery Image
+     * ============================ */
+    $(document).on('click', '.rep-gallery-remove', function () {
+
+        let item    = $(this).closest('.rep-gallery-item');
+        let id      = item.data('id');
+        let wrapper = item.closest('.repeator-type-gallery');
+        let input   = wrapper.find('.rep-gallery-ids');
+
+        let ids = input.val()
+            ? input.val().split(',').filter(v => parseInt(v) !== id)
+            : [];
+
+        input.val(ids.join(','));
+        item.remove();
     });
 
 });
