@@ -12,3 +12,5 @@ add_theme_support('post-thumbnails', array('page', 'post', 'portfolio', 'propert
 // add_post_type_support('dynamic');
 
 
+
+
