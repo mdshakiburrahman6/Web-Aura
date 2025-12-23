@@ -62,7 +62,6 @@ function webaura_repeator_callback($post){
     }
 
     ?>
-
         <div class="repeator-wrapper">
             <!-- Repeator Fields -->
             <?php 
@@ -85,14 +84,14 @@ function webaura_repeator_callback($post){
                     
                     <!-- Text (type) -->
                    <div class="rep-type-text">
-                         <input class="repeator-answer-text" type="text" name="rpt[<?php echo $index; ?>][answer]" value="<?php echo esc_attr($rep['answer']); ?>" placeholder="Enter the Answer.">
+                         <input class="repeator-answer-text" type="text" name="rpt[<?php echo $index; ?>][text_answer]" value="<?php echo esc_attr($rep['text_answer'] ?? ''); ?>" placeholder="Enter the Answer.">
                    </div>
                     
 
                     <!-- Editor -->
                     <div class="rep-type-editor">
-                        <?php wp_editor($rep['answer'], 'rpt_editor_' . $index, array(
-                            'textarea_name' => "rpt[$index][answer]",
+                        <?php wp_editor($rep['editor_answer'] ?? '', 'rpt_editor_' . $index, array(
+                            'textarea_name' => "rpt[$index][editor_answer]",
                             'textarea_rows' => 8,
                             'media_buttons' => true,
                         )); ?>
@@ -152,7 +151,6 @@ function webaura_repeator_callback($post){
         </div>
 
     <?php
-
 }
 
 
@@ -170,24 +168,54 @@ function webaura_repeator_save_meta($post_id){
 
        $clean = [];
 
-       foreach($_POST['rpt'] as $rep){
+    //    foreach($_POST['rpt'] as $rep){
 
+    //         $type = sanitize_text_field( $rep['type'] ?? 'text' );
             
-            $gallery = [];
+    //         $gallery = [];
 
-            if (!empty($rep['gallery'])) {
-                $gallery = array_map('intval', explode(',', $rep['gallery']));
+    //         if (!empty($rep['gallery'])) {
+    //             $gallery = array_map('intval', explode(',', $rep['gallery']));
+    //         }
+
+    //         $clean[] = [
+    //             'question' => sanitize_text_field($rep['question'] ?? ''),
+    //             'type' => $type,
+    //             'text_answer' => sanitize_text_field( $rep['text_answer'] ?? '' ),
+    //             'editor_answer' => wp_kses_post( $rep['editor_answer'] ?? '' ),
+    //             'options' => isset($rep['options']) ? array_map('sanitize_text_field', $rep['options'] ) : [],
+    //             'image'   => isset($rep['image']) ? intval($rep['image']) : 0,
+    //             'gallery' => $gallery,
+    //         ];
+    //    }
+            foreach ($_POST['rpt'] as $rep) {
+
+            $type = sanitize_text_field($rep['type'] ?? 'text');
+
+            $clean_item = [
+                'question' => sanitize_text_field($rep['question'] ?? ''),
+                'type'     => $type,
+                'options'  => isset($rep['options']) ? array_map('sanitize_text_field', $rep['options']) : [],
+                'image'    => isset($rep['image']) ? intval($rep['image']) : 0,
+                'gallery'  => !empty($rep['gallery'])
+                                ? array_map('intval', explode(',', $rep['gallery']))
+                                : [],
+            ];
+
+            // Save only needed answer
+            if ($type === 'text') {
+                $clean_item['text_answer'] = sanitize_text_field($rep['text_answer'] ?? '');
+                $clean_item['editor_answer'] = '';
             }
 
-            $clean[] = [
-                'question' => sanitize_text_field($rep['question'] ?? ''),
-                'type' => sanitize_text_field( $rep['type'] ?? 'text' ),
-                'answer' => sanitize_text_field( $rep['answer'] ?? '' ),
-                'options' => isset($rep['options']) ? array_map('sanitize_text_field', $rep['options'] ) : [],
-                'image'   => isset($rep['image']) ? intval($rep['image']) : 0,
-                'gallery' => $gallery,
-            ];
-       }
+            if ($type === 'editor') {
+                $clean_item['editor_answer'] = wp_kses_post($rep['editor_answer'] ?? '');
+                $clean_item['text_answer'] = '';
+            }
+
+            $clean[] = $clean_item;
+        }
+
        update_post_meta($post_id, '_repeators', $clean);
     }
 
@@ -195,9 +223,9 @@ function webaura_repeator_save_meta($post_id){
 add_action('save_post','webaura_repeator_save_meta');
 
 
-// =============================
+
+
 // 5. Enqueue Admin Assets (Repeator)
-// =============================
 function webaura_repeator_admin_assets($hook) {
 
     global $post;
@@ -209,10 +237,11 @@ function webaura_repeator_admin_assets($hook) {
         $post->post_type === 'repeator'
     ) {
 
+        // Media
         wp_enqueue_media();
 
 
-        // Admin CSS (optional)
+        // Admin CSS
         wp_enqueue_style(
             'webaura-repeator-admin-css',
             get_template_directory_uri() . '/assets/css/repeator-admin.css',

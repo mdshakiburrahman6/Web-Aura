@@ -23,12 +23,12 @@
 
                                             <!-- Text -->
                                             <?php if($rep['type'] === 'text') : ?>
-                                                <p><?php echo esc_html( $rep['answer']); ?></p>
+                                                <p><?php echo esc_html( $rep['text_answer']); ?></p>
                                             <?php endif; ?>
 
                                             <!-- Editor -->
                                             <?php if($rep['type'] === 'editor') : ?>
-                                                <p><?php echo wp_kses_post( $rep['answer']); ?></p>
+                                                <p><?php echo wp_kses_post( $rep['editor_answer']); ?></p>
                                             <?php endif; ?>
 
                                             <!-- Gallery -->
@@ -51,13 +51,14 @@
                                                     </ul>
                                                 <?php endif; ?>
 
-                                                <?php if (!empty($rep['image'])) : ?>
+                                            <?php endif; ?>
+
+                                            <!-- Image -->
+                                             <?php if (!empty($rep['image'])) : ?>
                                                     <div class="repeator-radio-image">
                                                         <?php echo wp_get_attachment_image($rep['image'], 'medium'); ?>
                                                     </div>
                                                 <?php endif; ?>
-
-                                            <?php endif; ?>
 
 
                                 <?php  
