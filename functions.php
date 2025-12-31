@@ -35,3 +35,5 @@ include_once 'inc/lerning_custome_post.php';
 // Include Repeator Post
 include_once 'inc/repetor_manager.php';
 
+//Include Custom Product Type
+include_once 'inc/woo_customize.php';
